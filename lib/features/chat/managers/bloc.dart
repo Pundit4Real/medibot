@@ -11,28 +11,23 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
   }
 
   void _onSendMessage(SendMessageEvent event, Emitter<ConversationState> emit) async {
-  if (event.message.isEmpty) return;
+    if (event.message.isEmpty) return;
 
-  final currentState = state;
-  List<Map<String, String>> updatedMessages = [];
+    final currentState = state;
+    List<Map<String, String>> chatHistory = [];
 
-  if (currentState is ConversationLoaded) {
-    updatedMessages = List<Map<String, String>>.from(currentState.messages)
-      ..add({"sender": "user", "text": event.message});
-  } else {
-    updatedMessages = [{"sender": "user", "text": event.message}];
+    if (currentState is ConversationLoaded) {
+      chatHistory = List<Map<String, String>>.from(currentState.messages);
+    }
+
+    chatHistory.add({"sender": "user", "text": event.message});
+    emit(ConversationLoaded(messages: chatHistory));
+
+    try {
+      final updatedChatHistory = await _repository.sendMessage(event.message, chatHistory);
+      emit(ConversationLoaded(messages: updatedChatHistory));
+    } catch (e) {
+      emit(ConversationError("Failed to connect to the AI bot. Please try again later."));
+    }
   }
-
-  emit(ConversationLoaded(messages: updatedMessages));
-
-  try {
-    final botResponse = await _repository.sendMessage(event.message);
-    updatedMessages = List<Map<String, String>>.from((state as ConversationLoaded).messages)
-      ..add({"sender": "bot", "text": botResponse});
-    emit(ConversationLoaded(messages: updatedMessages));
-  } catch (e) {
-    emit(ConversationError("Failed to connect to the AI bot. Please try again later."));
-  }
-}
-
 }

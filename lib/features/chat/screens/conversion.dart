@@ -12,7 +12,7 @@ class ConversationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("MediBot AI")),
+      appBar: AppBar(title: const Text("MediBot AI")),
       body: Column(
         children: [
           Expanded(
@@ -27,8 +27,8 @@ class ConversationScreen extends StatelessWidget {
                       return Align(
                         alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
                             color: isUser ? Colors.blue[200] : Colors.grey[300],
                             borderRadius: BorderRadius.circular(10),
@@ -41,22 +41,22 @@ class ConversationScreen extends StatelessWidget {
                 } else if (state is ConversationError) {
                   return Center(child: Text(state.error));
                 }
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: Text("Start a conversation!"));
               },
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: InputDecoration(hintText: "Type a message..."),
+                    decoration: const InputDecoration(hintText: "Type a message..."),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     final message = _controller.text.trim();
                     if (message.isNotEmpty) {
